@@ -1,0 +1,54 @@
+# Gera o instalador do Windows e publica numa Release do GitHub.
+# Como usar: atualize "version" no package.json, faça commit e crie uma tag igual:
+#   git tag v1.0.0 && git push origin v1.0.0
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Baixar o Electron
+        run: npx electron --version
+
+      - name: Gerar instalador
+        run: npm run dist
+
+      - name: Publicar na Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
+          generate_release_notes: true
+          body: |
+            ## Instalação
+            Baixe o **BK-R1X-Control-Setup-*.exe** abaixo e execute.
+
+            > [!WARNING]
+            > O Windows vai mostrar o aviso do SmartScreen ("O Windows protegeu o computador") porque o instalador não tem assinatura digital. Clique em **Mais informações → Executar assim mesmo**. O instalador é gerado automaticamente pelo GitHub Actions a partir do código deste repositório.
+
+            > [!NOTE]
+            > Projeto feito com auxílio de IA (Claude, da Anthropic) e testado em um BK-R1X real. Sem ligação com o fabricante; use por sua conta e risco.
+
+      - name: Guardar artefato (execução manual)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-windows
+          path: release/*.exe

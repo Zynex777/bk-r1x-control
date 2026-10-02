@@ -1,0 +1,11 @@
+node_modules
+dist
+release
+
+# Cópia do site oficial usada só como referência na engenharia reversa.
+# É código de terceiros: não publicar.
+src_web
+
+# Arquivos locais
+retorno.txt
+CLAUDE.md

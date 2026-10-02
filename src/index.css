@@ -1,0 +1,142 @@
+@import "@fontsource/cinzel/500.css";
+@import "@fontsource/cinzel/700.css";
+@import "@fontsource/cinzel-decorative/700.css";
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+
+@theme {
+  /* "void" em vez de "base": `text-base` já é utilitário de tamanho de fonte. */
+  --color-void: #07050b;
+  --color-panel: #110c18;
+  --color-panel-2: #1a1224;
+  --color-line: #2c1f3d;
+  --color-line-strong: #4a3366;
+  --color-muted: #9d8db5;
+  --color-ink: #ece4f7;
+  --color-accent: #a259ff;
+  --color-accent-bright: #c89bff;
+  --color-accent-deep: #4b1d82;
+  --color-blood: #c4183c;
+  --color-danger: #ff4d6d;
+  --color-warn: #f5b84a;
+  --color-ok: #6ee7b7;
+
+  --font-sans: "Inter Variable", "Segoe UI", system-ui, sans-serif;
+  --font-gothic: "Cinzel", "Times New Roman", serif;
+  --font-sigil: "Cinzel Decorative", "Cinzel", serif;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--color-void);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(110 40 190 / 0.28), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(120 20 60 / 0.14), transparent 70%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.012) 0 1px, transparent 1px 80px);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent-deep);
+  color: #fff;
+}
+
+/* Barra de rolagem discreta */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+/* Painel com cantos ornamentados */
+.gothic-panel {
+  position: relative;
+  background: linear-gradient(180deg, rgb(26 18 36 / 0.92), rgb(17 12 24 / 0.95));
+  border: 1px solid var(--color-line);
+  box-shadow:
+    inset 0 1px 0 rgb(200 155 255 / 0.06),
+    0 20px 40px -24px rgb(0 0 0 / 0.8);
+}
+.gothic-panel::before,
+.gothic-panel::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  background: var(--color-void);
+  border: 1px solid var(--color-line-strong);
+}
+.gothic-panel::before {
+  left: 18px;
+}
+.gothic-panel::after {
+  right: 18px;
+}
+
+.gothic-title {
+  font-family: var(--font-gothic);
+  letter-spacing: 0.14em;
+}
+
+/* Slider */
+input[type="range"].slider {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent-deep) 0%,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-line) var(--fill, 0%),
+    var(--color-line) 100%
+  );
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"].slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+input[type="range"].slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-accent);
+  box-shadow: 0 0 14px rgb(162 89 255 / 0.7);
+}
+
+/* Sem setinhas: elas cobriam o número nos campos estreitos. */
+input[type="number"] {
+  appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  animation: rise-in 0.25s ease-out both;
+}
