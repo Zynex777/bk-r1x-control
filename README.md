@@ -3,6 +3,8 @@
 Configurador open-source e offline para o mouse **BK-R1X**, uma alternativa ao app web
 oficial (bk-r1x.yjx2012.com).
 
+**Site:** https://zynex777.github.io/bk-r1x-control/ · **Usar no navegador:** https://zynex777.github.io/bk-r1x-control/app/
+
 - DPI (6 estágios), polling rate, lift-off distance, debounce, sensor e energia
 - Remapeamento dos 8 botões: cliques, teclas e combinações, mídia ou macros
 - Editor de macros com teclado visual (ABNT2), botões do mouse e gravação
@@ -62,6 +64,7 @@ npm run icon       # regenera o ícone padrão (build/icon.png)
 | `src/desktop/` | Ponte com o Electron e conversão de atalhos para o Windows |
 | `electron/main.cjs` | Janela, WebHID, bandeja, atalhos globais, detecção de programas abertos, nome/ícone nos atalhos do Windows |
 | `build/` | Ícone padrão e script extra do instalador NSIS |
+| `site/` | Página de apresentação (GitHub Pages; o configurador web vai em `/app/`) |
 
 A pasta `src_web/` (cópia do site oficial, usada só como referência) não é publicada:
 é código de terceiros e está no `.gitignore`.

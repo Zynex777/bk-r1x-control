@@ -23,7 +23,23 @@ export function AppSettings({ theme, onTheme, onExport, onImport }: AppSettingsP
         </div>
       </Panel>
 
-      {desktop && <DesktopOptions />}
+      {desktop ? (
+        <DesktopOptions />
+      ) : (
+        <Panel
+          title="App para Windows"
+          subtitle="O app instalado faz tudo o que esta página faz e mais: atalhos de macro dentro dos jogos, perfis que trocam sozinhos ao abrir um jogo e ícone na bandeja."
+        >
+          <a
+            href="https://github.com/Zynex777/bk-r1x-control/releases/latest"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary inline-flex items-center gap-2 rounded-md border border-accent/60 bg-gradient-to-b from-accent to-accent-deep px-4 py-2 text-sm font-semibold text-on-accent"
+          >
+            Baixar para Windows
+          </a>
+        </Panel>
+      )}
 
       <Panel
         title="Backup"
