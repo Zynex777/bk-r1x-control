@@ -7,6 +7,8 @@ oficial (bk-r1x.yjx2012.com).
 - Remapeamento dos 8 botões: cliques, teclas e combinações, mídia ou macros
 - Editor de macros com teclado visual (ABNT2), botões do mouse e gravação
 - **Ciclos de macro com atalhos globais**: troque a macro de um botão sem sair do jogo
+- **Perfis por programa**: ao abrir um jogo ou app, os botões recebem as macros dele; ao fechar, voltam ao padrão
+- **5 temas**: Roxo Gótico, Escuro, Claro, Frutiger Aero e Jumpstyle
 - Nome e ícone personalizáveis, que também viram o nome e o ícone do programa
 - Funciona 100% offline
 
@@ -55,10 +57,10 @@ npm run icon       # regenera o ícone padrão (build/icon.png)
 | `src/driver/protocol.ts` | `MouseDriver`: conexão, fila de comandos, config, botões, macros, eventos |
 | `src/driver/keycodes.ts` | Tabelas de ações de botão, teclas HID e mídia |
 | `src/components/` | Telas: DPI, desempenho, botões, macros, ciclos, dispositivo, teclado visual |
-| `src/state/` | Macros, ciclos, perfil e backup (salvos no `localStorage`) |
+| `src/state/` | Macros, ciclos, perfis por programa, temas e backup (salvos no `localStorage`) |
 | `src/hooks/useHotkeys.ts` | Atalhos: locais no navegador, globais no desktop |
 | `src/desktop/` | Ponte com o Electron e conversão de atalhos para o Windows |
-| `electron/main.cjs` | Janela, WebHID, bandeja, atalhos globais, nome/ícone nos atalhos do Windows |
+| `electron/main.cjs` | Janela, WebHID, bandeja, atalhos globais, detecção de programas abertos, nome/ícone nos atalhos do Windows |
 | `build/` | Ícone padrão e script extra do instalador NSIS |
 
 A pasta `src_web/` (cópia do site oficial, usada só como referência) não é publicada:

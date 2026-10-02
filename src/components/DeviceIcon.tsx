@@ -32,7 +32,7 @@ export function DeviceIcon({ icon, className = 'h-9 w-9' }: { icon: DeviceIconVa
   }
   const preset = PRESET_ICONS.find((p) => p.id === icon.id) ?? PRESET_ICONS[0]!;
   return (
-    <svg viewBox="0 0 24 24" className={`${className} fill-accent-bright drop-shadow-[0_0_8px_rgb(162_89_255/0.7)]`} aria-hidden>
+    <svg viewBox="0 0 24 24" className={`${className} fill-accent-bright drop-shadow-[0_0_8px_var(--glow)]`} aria-hidden>
       <path fillRule="evenodd" d={preset.path} />
     </svg>
   );

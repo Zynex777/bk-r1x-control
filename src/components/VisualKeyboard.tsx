@@ -94,7 +94,7 @@ export function VisualKeyboard({ onPress, highlighted, disabled, compact }: Visu
       <div
         ref={innerRef}
         style={{ zoom: scale }}
-        className="inline-flex gap-4 rounded-lg border border-line bg-void/80 p-3 shadow-[inset_0_2px_12px_rgb(0_0_0/0.6)]"
+        className="inline-flex gap-4 rounded-lg border border-line bg-void/80 p-3 shadow-[inset_0_2px_12px_rgb(0_0_0/0.25)]"
       >
         <div className="flex flex-col gap-1">
           {row(FN_ROW, -1)}
@@ -135,8 +135,8 @@ function KeyCap({ code, width, active, disabled, onPress }: {
       style={{ width: `${width * UNIT + (width - 1) * 0.25}rem`, height: `${UNIT}rem` }}
       className={`shrink-0 truncate rounded-[5px] border border-b-[3px] px-1 text-[11px] font-medium transition active:translate-y-px active:border-b disabled:cursor-not-allowed disabled:opacity-40 ${
         active
-          ? 'border-accent border-b-accent-deep bg-accent/25 text-white shadow-[0_0_14px_-3px_var(--color-accent)]'
-          : 'border-line-strong border-b-[#0d0913] bg-panel-2 text-ink hover:border-accent/70 hover:text-white'
+          ? 'border-accent border-b-accent-deep bg-accent/25 text-ink shadow-[0_0_14px_-3px_var(--glow)]'
+          : 'border-line-strong border-b-line-strong bg-panel-2 text-ink hover:border-accent/70'
       }`}
     >
       {text}

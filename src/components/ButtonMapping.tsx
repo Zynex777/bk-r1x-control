@@ -35,12 +35,14 @@ interface ButtonMappingProps {
   macros: StoredMacro[];
   /** Botões controlados por um ciclo de macros: índice → nome do ciclo. */
   cycleOwners: Record<number, string>;
+  /** Perfil por programa ativo agora: os botões que ele troca e o que está valendo neles. */
+  liveProfile: { name: string; buttons: ReadonlySet<number>; actions: ButtonAction[] } | null;
   disabled: boolean;
   onChange: (index: number, action: ButtonAction) => void;
   onReset: () => void;
 }
 
-export function ButtonMapping({ buttons, macros, cycleOwners, disabled, onChange, onReset }: ButtonMappingProps) {
+export function ButtonMapping({ buttons, macros, cycleOwners, liveProfile, disabled, onChange, onReset }: ButtonMappingProps) {
   const [selected, setSelected] = useState(1);
   const marked = useMemo(() => new Set(Object.keys(cycleOwners).map((i) => BUTTON_ZONES[Number(i)]!)), [cycleOwners]);
 
@@ -77,6 +79,11 @@ export function ButtonMapping({ buttons, macros, cycleOwners, disabled, onChange
                       {cycleOwners[i] && <span className="ml-auto text-blood normal-case">↻ {cycleOwners[i]}</span>}
                     </div>
                     <div className="mt-0.5 truncate text-sm font-medium text-ink">{action ? describeAction(action, macros) : '—'}</div>
+                    {liveProfile?.buttons.has(i) && (
+                      <div className="mt-1 truncate text-[11px] text-accent-bright">
+                        ▶ Agora: {describeAction(liveProfile.actions[i]!, macros)} · perfil “{liveProfile.name}”
+                      </div>
+                    )}
                   </button>
                 </li>
               );
@@ -90,6 +97,7 @@ export function ButtonMapping({ buttons, macros, cycleOwners, disabled, onChange
         buttonName={BUTTON_NAMES[selected] ?? ''}
         locked={selected === LOCKED_BUTTON}
         cycleName={cycleOwners[selected]}
+        liveProfileName={liveProfile?.buttons.has(selected) ? liveProfile.name : undefined}
         current={buttons[selected]}
         macros={macros}
         disabled={disabled}
@@ -116,10 +124,11 @@ function categoryOf(action: ButtonAction | undefined): Category {
   }
 }
 
-function ActionEditor({ buttonName, locked, cycleName, current, macros, disabled, onApply }: {
+function ActionEditor({ buttonName, locked, cycleName, liveProfileName, current, macros, disabled, onApply }: {
   buttonName: string;
   locked: boolean;
   cycleName: string | undefined;
+  liveProfileName: string | undefined;
   current: ButtonAction | undefined;
   macros: StoredMacro[];
   disabled: boolean;
@@ -142,6 +151,11 @@ function ActionEditor({ buttonName, locked, cycleName, current, macros, disabled
         <>
           Atual: <span className="text-ink">{current ? describeAction(current, macros) : '—'}</span>
           {cycleName && <span className="text-blood"> · controlado pelo ciclo “{cycleName}” (o atalho vai sobrescrever)</span>}
+          {liveProfileName && (
+            <span className="text-accent-bright">
+              {' '}· o perfil “{liveProfileName}” está usando este botão agora; esta é a função padrão, que volta quando o programa fechar
+            </span>
+          )}
         </>
       }
       actions={

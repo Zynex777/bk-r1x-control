@@ -12,11 +12,13 @@ interface HeaderProps {
   battery: BatteryStatus | null;
   profile: DeviceProfile;
   saving: boolean;
+  /** Perfil por programa ativo agora, se houver. */
+  activeProfileName: string | null;
   onConnect: () => void;
   onDisconnect: () => void;
 }
 
-export function Header({ status, mode, online, battery, profile, saving, onConnect, onDisconnect }: HeaderProps) {
+export function Header({ status, mode, online, battery, profile, saving, activeProfileName, onConnect, onDisconnect }: HeaderProps) {
   const connected = status === 'connected';
   const dot = !connected ? 'bg-muted' : online ? 'bg-ok shadow-[0_0_10px_var(--color-ok)]' : 'bg-warn';
   const statusText =
@@ -49,6 +51,14 @@ export function Header({ status, mode, online, battery, profile, saving, onConne
         </div>
 
         <div className="ml-auto flex items-center gap-5">
+          {activeProfileName && (
+            <span
+              className="hidden max-w-48 truncate rounded-full border border-accent/50 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-bright md:inline"
+              title="Perfil por programa ativo"
+            >
+              ▶ {activeProfileName}
+            </span>
+          )}
           {connected && online && (
             <span className={`hidden items-center gap-1.5 text-xs sm:flex ${saving ? 'text-accent-bright' : 'text-muted'}`}>
               {saving ? (

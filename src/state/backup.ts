@@ -1,4 +1,6 @@
 import { safeLoopMode } from '../driver/protocol';
+import { sanitizeAppProfiles, type AppProfile } from './appProfiles';
+import { THEMES, type ThemeId } from './theme';
 import { DEFAULT_PROFILE, newId, type DeviceProfile, type MacroCycle, type StoredMacro } from './types';
 
 /**
@@ -13,6 +15,8 @@ export interface Backup {
   cycles: MacroCycle[];
   profile: DeviceProfile;
   dpiColors: string[];
+  appProfiles: AppProfile[];
+  theme?: ThemeId;
 }
 
 export function makeBackup(data: Omit<Backup, 'app' | 'version' | 'exportedAt'>): Backup {
@@ -52,12 +56,19 @@ export function parseBackup(text: string): Backup {
     mode: safeLoopMode(c.mode),
     macroIds: (c.macroIds ?? []).filter((id) => ids.has(id)),
   }));
+  // Perfis por programa: só macros que vieram no mesmo arquivo.
+  const appProfiles = sanitizeAppProfiles(b.appProfiles).map((p) => ({
+    ...p,
+    overrides: Object.fromEntries(Object.entries(p.overrides).filter(([, o]) => ids.has(o.macroId))),
+  }));
   return {
     app: 'bk-r1x-control',
     version: 1,
     exportedAt: String(b.exportedAt ?? ''),
     macros,
     cycles,
+    appProfiles,
+    theme: THEMES.some((t) => t.id === b.theme) ? b.theme : undefined,
     profile: { ...DEFAULT_PROFILE, ...(b.profile ?? {}) },
     dpiColors: Array.isArray(b.dpiColors) ? b.dpiColors.map(String) : [],
   };

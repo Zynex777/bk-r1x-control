@@ -2,7 +2,7 @@
 // Responsável por: janela, permissões WebHID, bandeja, atalhos globais e
 // identidade dinâmica (nome + ícone nos atalhos do Windows).
 
-const { app, BrowserWindow, Tray, Menu, globalShortcut, ipcMain, nativeImage, session, shell } = require('electron');
+const { app, BrowserWindow, Tray, Menu, dialog, globalShortcut, ipcMain, nativeImage, session, shell } = require('electron');
 const { execFile } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -20,6 +20,10 @@ let tray = null;
 let quitting = false;
 let trayHintShown = false;
 let identity = { name: 'BK-R1X', iconPath: null };
+
+// Testes: pasta de dados separada e sem acesso ao mouse, para não interferir no app instalado.
+if (process.env.BKR1X_USER_DATA) app.setPath('userData', process.env.BKR1X_USER_DATA);
+const HID_DISABLED = !!process.env.BKR1X_NO_HID;
 
 // -------------------------------------------------------------------------
 // Instância única: abrir de novo só traz a janela existente para frente.
@@ -70,6 +74,7 @@ function start() {
   createWindow();
   createTray();
   registerIpc();
+  setInterval(() => void pollProcesses(), PROCESS_POLL_MS);
   if (app.isPackaged) syncShortcuts().catch((err) => console.error('atalhos do Windows:', err));
 }
 
@@ -78,7 +83,7 @@ function start() {
 // -------------------------------------------------------------------------
 
 function isOurDevice(d) {
-  return VENDOR_IDS.has(d.vendorId) && d.productId === PRODUCT_ID;
+  return !HID_DISABLED && VENDOR_IDS.has(d.vendorId) && d.productId === PRODUCT_ID;
 }
 
 function setupHid() {
@@ -246,12 +251,85 @@ function registerIpc() {
     }, 1200);
   });
 
+  ipcMain.handle('processes:watch', (_e, names) => {
+    watchedProcesses = new Set(
+      (Array.isArray(names) ? names : []).filter((n) => typeof n === 'string').map((n) => n.toLowerCase()),
+    );
+    lastRunningKey = null; // força avisar a interface na próxima leitura
+    pollProcesses();
+  });
+
+  ipcMain.handle('processes:list', async () => {
+    const names = await runningProcesses();
+    return [...names].filter((n) => !SYSTEM_PROCESSES.has(n)).sort();
+  });
+
+  ipcMain.handle('processes:pick', async () => {
+    const result = await dialog.showOpenDialog(win, {
+      title: 'Escolha o programa ou jogo',
+      filters: [{ name: 'Programas', extensions: ['exe'] }],
+      properties: ['openFile'],
+    });
+    return result.canceled || !result.filePaths[0] ? null : path.basename(result.filePaths[0]).toLowerCase();
+  });
+
   ipcMain.handle('autostart:get', () => app.getLoginItemSettings({ args: ['--hidden'] }).openAtLogin);
   ipcMain.handle('autostart:set', (_e, enabled) => {
     app.setLoginItemSettings({ openAtLogin: !!enabled, args: ['--hidden'] });
     return app.getLoginItemSettings({ args: ['--hidden'] }).openAtLogin;
   });
 }
+
+// -------------------------------------------------------------------------
+// Perfis por programa: avisa a interface quando programas vigiados abrem/fecham
+// -------------------------------------------------------------------------
+
+const PROCESS_POLL_MS = 2500;
+// Processos do Windows que não fazem sentido na lista "programas abertos".
+const SYSTEM_PROCESSES = new Set([
+  'system', 'system idle process', 'registry', 'smss.exe', 'csrss.exe', 'wininit.exe', 'services.exe', 'lsass.exe',
+  'svchost.exe', 'winlogon.exe', 'fontdrvhost.exe', 'dwm.exe', 'conhost.exe', 'sihost.exe', 'taskhostw.exe',
+  'runtimebroker.exe', 'dllhost.exe', 'ctfmon.exe', 'searchhost.exe', 'startmenuexperiencehost.exe',
+  'shellexperiencehost.exe', 'textinputhost.exe', 'smartscreen.exe', 'securityhealthservice.exe', 'spoolsv.exe',
+  'wmiprvse.exe', 'audiodg.exe', 'memory compression', 'msmpeng.exe', 'nissrv.exe', 'tasklist.exe', 'secure system',
+  'lsaiso.exe', 'wudfhost.exe', 'searchindexer.exe', 'sgrmbroker.exe', 'unsecapp.exe', 'wlanext.exe',
+]);
+
+let watchedProcesses = new Set();
+let lastRunningKey = null;
+
+function runningProcesses() {
+  return new Promise((resolve) => {
+    execFile('tasklist', ['/fo', 'csv', '/nh'], { windowsHide: true, maxBuffer: 16 * 1024 * 1024 }, (err, out) => {
+      const names = new Set();
+      if (!err) {
+        for (const line of out.split(/\r?\n/)) {
+          const m = /^"([^"]+)"/.exec(line);
+          if (m) names.add(m[1].toLowerCase());
+        }
+      }
+      resolve(names);
+    });
+  });
+}
+
+let polling = false;
+async function pollProcesses() {
+  if (polling || watchedProcesses.size === 0 || !win) return;
+  polling = true;
+  try {
+    const names = await runningProcesses();
+    const running = [...watchedProcesses].filter((n) => names.has(n)).sort();
+    const key = running.join('|');
+    if (key !== lastRunningKey) {
+      lastRunningKey = key;
+      win.webContents.send('processes', running);
+    }
+  } finally {
+    polling = false;
+  }
+}
+
 
 // -------------------------------------------------------------------------
 // Ícone .ico (PNG embutido, aceito pelo Windows Vista em diante)

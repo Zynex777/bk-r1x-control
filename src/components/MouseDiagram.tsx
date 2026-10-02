@@ -49,8 +49,8 @@ export function MouseDiagram({ zones, selected, onSelect, badges, marked, disabl
     <svg viewBox="0 0 220 340" className={className ?? 'mx-auto w-full max-w-[280px]'}>
       <defs>
         <linearGradient id="md-shell" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stopColor="#231833" />
-          <stop offset="1" stopColor="#0c0812" />
+          <stop offset="0" style={{ stopColor: 'var(--color-panel-2)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--color-void)' }} />
         </linearGradient>
         <filter id="md-glow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="6" />

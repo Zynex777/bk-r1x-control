@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { desktop } from '../desktop/bridge';
 import type { ConnectionMode } from '../driver/protocol';
 import { DEFAULT_PROFILE, type DeviceProfile } from '../state/types';
 import { DeviceIcon, PRESET_ICONS, imageFileToIcon } from './DeviceIcon';
-import { Button, Field, Panel, Toggle, inputClass } from './ui';
+import { Button, Field, Panel, inputClass } from './ui';
 
 interface DeviceSettingsProps {
   profile: DeviceProfile;
@@ -12,13 +12,10 @@ interface DeviceSettingsProps {
   disabled: boolean;
   onProfile: (profile: DeviceProfile) => void;
   onFactoryReset: () => void;
-  onExport: () => void;
-  onImport: (file: File) => void;
 }
 
-export function DeviceSettings({ profile, firmware, mode, disabled, onProfile, onFactoryReset, onExport, onImport }: DeviceSettingsProps) {
+export function DeviceSettings({ profile, firmware, mode, disabled, onProfile, onFactoryReset }: DeviceSettingsProps) {
   const fileRef = useRef<HTMLInputElement>(null);
-  const backupRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
 
   const upload = async (file: File | undefined) => {
@@ -43,7 +40,7 @@ export function DeviceSettings({ profile, firmware, mode, disabled, onProfile, o
       >
         <div className="grid gap-8 md:grid-cols-[auto_1fr]">
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-28 w-28 items-center justify-center rounded-xl border border-line-strong bg-void/70 shadow-[inset_0_0_30px_rgb(162_89_255/0.15)]">
+            <div className="flex h-28 w-28 items-center justify-center rounded-xl border border-line-strong bg-void/70 shadow-[inset_0_0_30px_color-mix(in_srgb,var(--color-accent)_18%,transparent)]">
               <DeviceIcon icon={profile.icon} className="h-16 w-16" />
             </div>
             <span className="gothic-title max-w-40 truncate text-sm text-ink">{profile.name || DEFAULT_PROFILE.name}</span>
@@ -96,29 +93,6 @@ export function DeviceSettings({ profile, firmware, mode, disabled, onProfile, o
         </div>
       </Panel>
 
-      <Panel
-        title="Backup"
-        subtitle="Macros, ciclos de atalho, nome, ícone e cores ficam salvos só neste computador. Exporte para guardar ou levar para outro lugar, por exemplo do navegador para o app instalado."
-      >
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary" onClick={onExport}>Exportar configurações</Button>
-          <Button onClick={() => backupRef.current?.click()}>Importar configurações…</Button>
-          <input
-            ref={backupRef}
-            type="file"
-            accept="application/json,.json"
-            hidden
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              e.target.value = '';
-              if (file) onImport(file);
-            }}
-          />
-        </div>
-      </Panel>
-
-      {desktop && <DesktopOptions />}
-
       <Panel title="Informações">
         <dl className="grid gap-4 text-sm sm:grid-cols-3">
           <Info label="Modelo" value="BK-R1X" />
@@ -143,21 +117,3 @@ function Info({ label, value }: { label: string; value: string }) {
   );
 }
 
-function DesktopOptions() {
-  const [autoStart, setAutoStart] = useState<boolean | null>(null);
-  useEffect(() => {
-    void desktop?.getAutoStart().then(setAutoStart);
-  }, []);
-
-  return (
-    <Panel title="Programa">
-      <Toggle
-        label="Iniciar com o Windows"
-        description="Abre escondido na bandeja ao ligar o computador, para os atalhos de macro já estarem prontos."
-        checked={autoStart ?? false}
-        disabled={autoStart === null}
-        onChange={(on) => void desktop?.setAutoStart(on).then(setAutoStart)}
-      />
-    </Panel>
-  );
-}

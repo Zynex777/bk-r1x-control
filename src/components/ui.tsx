@@ -64,7 +64,7 @@ export function Segmented<T extends string | number>({ options, value, onChange,
             onClick={() => onChange(o.value)}
             className={`rounded px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-35 ${
               active
-                ? 'bg-gradient-to-b from-accent to-accent-deep text-white shadow-[0_0_18px_-4px_var(--color-accent)]'
+                ? 'bg-gradient-to-b from-accent to-accent-deep text-on-accent shadow-[0_0_18px_-4px_var(--glow)]'
                 : 'text-muted hover:bg-panel-2 hover:text-ink'
             }`}
           >
@@ -133,7 +133,7 @@ export function Button({ children, onClick, variant = 'ghost', size = 'md', disa
 }) {
   const styles = {
     primary:
-      'border border-accent/60 bg-gradient-to-b from-accent to-accent-deep text-white hover:brightness-115 shadow-[0_0_22px_-8px_var(--color-accent)]',
+      'btn-primary border border-accent/60 bg-gradient-to-b from-accent to-accent-deep text-on-accent hover:brightness-115 shadow-[0_0_22px_-8px_var(--glow)]',
     ghost: 'border border-line-strong text-ink hover:border-accent/60 hover:bg-panel-2',
     subtle: 'text-muted hover:bg-panel-2 hover:text-ink',
     danger: 'border border-blood/60 text-danger hover:bg-blood/15',
@@ -183,5 +183,5 @@ export function Kbd({ children }: { children: ReactNode }) {
 }
 
 export const inputClass =
-  'w-full rounded-md border border-line bg-void/80 px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:shadow-[0_0_0_3px_rgb(162_89_255/0.15)] disabled:opacity-40';
+  'w-full rounded-md border border-line bg-void/80 px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-accent)_18%,transparent)] disabled:opacity-40';
 export const selectClass = inputClass;

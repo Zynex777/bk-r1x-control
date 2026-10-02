@@ -1,9 +1,15 @@
 @import "@fontsource/cinzel/500.css";
 @import "@fontsource/cinzel/700.css";
 @import "@fontsource/cinzel-decorative/700.css";
+@import "@fontsource/orbitron/700.css";
+@import "@fontsource/orbitron/900.css";
 @import "@fontsource-variable/inter";
 @import "tailwindcss";
 
+/*
+ * Tema padrão: Roxo Gótico. Os outros temas (mais abaixo) redefinem estas mesmas
+ * variáveis em :root[data-theme="..."]; os componentes só usam as variáveis.
+ */
 @theme {
   /* "void" em vez de "base": `text-base` já é utilitário de tamanho de fonte. */
   --color-void: #07050b;
@@ -16,6 +22,8 @@
   --color-accent: #a259ff;
   --color-accent-bright: #c89bff;
   --color-accent-deep: #4b1d82;
+  /* Texto sobre fundo de destaque (botão principal, opção selecionada). */
+  --color-on-accent: #ffffff;
   --color-blood: #c4183c;
   --color-danger: #ff4d6d;
   --color-warn: #f5b84a;
@@ -26,6 +34,152 @@
   --font-sigil: "Cinzel Decorative", "Cinzel", serif;
 }
 
+:root {
+  --app-bg:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(110 40 190 / 0.28), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(120 20 60 / 0.14), transparent 70%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.012) 0 1px, transparent 1px 80px);
+  --panel-bg: linear-gradient(180deg, rgb(26 18 36 / 0.92), rgb(17 12 24 / 0.95));
+  --panel-shadow: inset 0 1px 0 rgb(200 155 255 / 0.06), 0 20px 40px -24px rgb(0 0 0 / 0.8);
+  --panel-radius: 0.5rem;
+  --panel-blur: none;
+  --ornament: block;
+  --title-spacing: 0.14em;
+  --title-transform: none;
+  --glow: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ Escuro */
+:root[data-theme="dark"] {
+  --color-void: #0b0d10;
+  --color-panel: #14171c;
+  --color-panel-2: #1b1f26;
+  --color-line: #262b33;
+  --color-line-strong: #3a414d;
+  --color-muted: #8b93a1;
+  --color-ink: #e8eaee;
+  --color-accent: #4f8cff;
+  --color-accent-bright: #8fb4ff;
+  --color-accent-deep: #2251b8;
+  --color-on-accent: #ffffff;
+  --color-blood: #e5484d;
+  --color-danger: #ff6369;
+  --font-gothic: var(--font-sans);
+  --font-sigil: var(--font-sans);
+  --app-bg: radial-gradient(ellipse 70% 45% at 50% -10%, rgb(79 140 255 / 0.12), transparent 70%);
+  --panel-bg: var(--color-panel);
+  --panel-shadow: 0 12px 30px -20px rgb(0 0 0 / 0.8);
+  --panel-radius: 0.75rem;
+  --ornament: none;
+  --title-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------------- Claro */
+:root[data-theme="light"] {
+  --color-void: #eef0f5;
+  --color-panel: #ffffff;
+  --color-panel-2: #f2f4f8;
+  --color-line: #dde1e9;
+  --color-line-strong: #c3c9d4;
+  --color-muted: #5d6676;
+  --color-ink: #151922;
+  --color-accent: #6d28d9;
+  --color-accent-bright: #5b21b6;
+  --color-accent-deep: #4c1d95;
+  --color-on-accent: #ffffff;
+  --color-blood: #be123c;
+  --color-danger: #dc2626;
+  --color-warn: #b45309;
+  --color-ok: #047857;
+  --font-gothic: var(--font-sans);
+  --font-sigil: var(--font-sans);
+  --app-bg: radial-gradient(ellipse 70% 45% at 50% -10%, rgb(109 40 217 / 0.08), transparent 70%);
+  --panel-bg: var(--color-panel);
+  --panel-shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 10px 30px -18px rgb(15 23 42 / 0.25);
+  --panel-radius: 0.75rem;
+  --ornament: none;
+  --title-spacing: 0.04em;
+  --glow: transparent;
+  color-scheme: light;
+}
+
+/* ----------------------------------------------------------- Frutiger Aero */
+:root[data-theme="aero"] {
+  --color-void: #d7f0ff;
+  --color-panel: #f4fbff;
+  --color-panel-2: #e3f4ff;
+  --color-line: #a9d8f2;
+  --color-line-strong: #6cb8e2;
+  --color-muted: #3d6c8a;
+  --color-ink: #06324f;
+  --color-accent: #00a2e8;
+  --color-accent-bright: #0071b8;
+  --color-accent-deep: #005fa0;
+  --color-on-accent: #ffffff;
+  --color-blood: #d6334b;
+  --color-danger: #d6334b;
+  --color-warn: #b86e00;
+  --color-ok: #2f9e44;
+  --font-sans: "Segoe UI", "Frutiger", "Inter Variable", system-ui, sans-serif;
+  --font-gothic: "Segoe UI", "Frutiger", "Inter Variable", sans-serif;
+  --font-sigil: "Segoe UI", "Frutiger", "Inter Variable", sans-serif;
+  /* Bolhas de vidro: só o contorno e um brilho, para não cobrir o texto. */
+  --app-bg:
+    radial-gradient(circle at 6% 30%, transparent 0 2rem, rgb(255 255 255 / 0.45) 2.15rem, transparent 2.35rem),
+    radial-gradient(circle at 5.2% 28.6%, rgb(255 255 255 / 0.55) 0 0.35rem, transparent 0.45rem),
+    radial-gradient(circle at 94% 12%, transparent 0 1.4rem, rgb(255 255 255 / 0.5) 1.52rem, transparent 1.7rem),
+    radial-gradient(circle at 93.4% 11%, rgb(255 255 255 / 0.6) 0 0.25rem, transparent 0.32rem),
+    radial-gradient(circle at 96% 62%, transparent 0 2.6rem, rgb(255 255 255 / 0.35) 2.75rem, transparent 2.95rem),
+    radial-gradient(circle at 3% 78%, transparent 0 1rem, rgb(255 255 255 / 0.4) 1.1rem, transparent 1.25rem),
+    radial-gradient(ellipse 120% 40% at 50% 112%, #7fd36b 0 55%, transparent 56%),
+    radial-gradient(ellipse 140% 45% at 30% 118%, #45b649 0 55%, transparent 56%),
+    linear-gradient(180deg, #2fa8e6 0%, #8fd3f7 45%, #e6f7ff 100%);
+  --panel-bg: linear-gradient(180deg, rgb(255 255 255 / 0.82), rgb(225 244 255 / 0.68));
+  --panel-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), 0 10px 30px -12px rgb(0 70 120 / 0.35);
+  --panel-radius: 1.1rem;
+  --panel-blur: blur(14px) saturate(1.3);
+  --ornament: none;
+  --title-spacing: 0.02em;
+  --glow: rgb(0 162 232 / 0.45);
+  color-scheme: light;
+}
+
+/* -------------------------------------------------------------- Jumpstyle */
+:root[data-theme="jump"] {
+  --color-void: #030306;
+  --color-panel: #0b0b12;
+  --color-panel-2: #13131f;
+  --color-line: #232340;
+  --color-line-strong: #3d3d70;
+  --color-muted: #9a9ac4;
+  --color-ink: #f2f6ff;
+  --color-accent: #00f0ff;
+  --color-accent-bright: #7ffbff;
+  --color-accent-deep: #0067ff;
+  --color-on-accent: #001218;
+  --color-blood: #ff2bd6;
+  --color-danger: #ff3fd9;
+  --color-warn: #ffe600;
+  --color-ok: #39ff14;
+  --font-gothic: "Orbitron", "Inter Variable", sans-serif;
+  --font-sigil: "Orbitron", "Inter Variable", sans-serif;
+  --app-bg:
+    repeating-linear-gradient(115deg, transparent 0 46px, rgb(0 240 255 / 0.05) 46px 50px, transparent 50px 96px, rgb(255 43 214 / 0.04) 96px 100px),
+    linear-gradient(180deg, transparent 62%, rgb(0 240 255 / 0.08)),
+    repeating-linear-gradient(90deg, rgb(0 240 255 / 0.07) 0 1px, transparent 1px 64px),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(255 43 214 / 0.18), transparent 70%);
+  --panel-bg: linear-gradient(160deg, rgb(19 19 31 / 0.95), rgb(8 8 14 / 0.97));
+  --panel-shadow: 0 0 0 1px rgb(0 240 255 / 0.12), 0 0 26px -10px rgb(0 240 255 / 0.5);
+  --panel-radius: 0.25rem;
+  --ornament: none;
+  --title-spacing: 0.12em;
+  --title-transform: uppercase;
+  --glow: rgb(0 240 255 / 0.75);
+}
+
+/* ------------------------------------------------------------------- Base */
+
 html,
 body,
 #root {
@@ -34,10 +188,7 @@ body,
 
 body {
   background-color: var(--color-void);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(110 40 190 / 0.28), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(120 20 60 / 0.14), transparent 70%),
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.012) 0 1px, transparent 1px 80px);
+  background-image: var(--app-bg);
   background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -55,18 +206,19 @@ body {
   scrollbar-color: var(--color-line-strong) transparent;
 }
 
-/* Painel com cantos ornamentados */
+/* Painel. No tema gótico ganha cantos ornamentados. Regra fora de @layer: vence os utilitários. */
 .gothic-panel {
   position: relative;
-  background: linear-gradient(180deg, rgb(26 18 36 / 0.92), rgb(17 12 24 / 0.95));
+  background: var(--panel-bg);
   border: 1px solid var(--color-line);
-  box-shadow:
-    inset 0 1px 0 rgb(200 155 255 / 0.06),
-    0 20px 40px -24px rgb(0 0 0 / 0.8);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: var(--panel-blur);
 }
 .gothic-panel::before,
 .gothic-panel::after {
   content: "";
+  display: var(--ornament);
   position: absolute;
   top: -5px;
   width: 9px;
@@ -84,7 +236,58 @@ body {
 
 .gothic-title {
   font-family: var(--font-gothic);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--title-spacing);
+  text-transform: var(--title-transform);
+}
+
+/* Frutiger Aero: botões "gel" arredondados com brilho. */
+:root[data-theme="aero"] .btn-primary {
+  border-radius: 999px;
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / 0.65) 0%, rgb(255 255 255 / 0.15) 48%, transparent 52%),
+    linear-gradient(180deg, #3cc4ff, #0079c8);
+  text-shadow: 0 1px 1px rgb(0 60 110 / 0.5);
+}
+:root[data-theme="aero"] .gothic-panel::before {
+  content: "";
+  display: block;
+  inset: 1px 1px auto 1px;
+  top: 1px;
+  left: 1px;
+  width: auto;
+  height: 40%;
+  transform: none;
+  border: 0;
+  border-radius: var(--panel-radius) var(--panel-radius) 50% 50% / var(--panel-radius) var(--panel-radius) 12px 12px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.55), transparent);
+  pointer-events: none;
+}
+
+/* O brilho fica atrás do conteúdo do painel. */
+:root[data-theme="aero"] .gothic-panel > * {
+  position: relative;
+}
+
+/* Frutiger Aero: menu lateral num painel de vidro (sobre o céu o texto perdia contraste). */
+:root[data-theme="aero"] .app-nav {
+  padding: 0.5rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.8), rgb(225 244 255 / 0.65));
+  backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), 0 10px 30px -12px rgb(0 70 120 / 0.35);
+}
+
+/* Jumpstyle: títulos com brilho neon e botões em corte diagonal. */
+:root[data-theme="jump"] .gothic-title {
+  text-shadow: 0 0 10px rgb(0 240 255 / 0.55);
+}
+:root[data-theme="jump"] .btn-primary {
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  border-radius: 0;
+  font-family: var(--font-gothic);
+  letter-spacing: 0.08em;
+  background-image: linear-gradient(90deg, #00f0ff, #ff2bd6);
 }
 
 /* Slider */
@@ -112,9 +315,9 @@ input[type="range"].slider::-webkit-slider-thumb {
   height: 18px;
   transform: rotate(45deg);
   border-radius: 3px;
-  background: var(--color-ink);
+  background: var(--color-panel);
   border: 3px solid var(--color-accent);
-  box-shadow: 0 0 14px rgb(162 89 255 / 0.7);
+  box-shadow: 0 0 14px var(--glow);
 }
 
 /* Sem setinhas: elas cobriam o número nos campos estreitos. */
